@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  msa-fe:
+    image: icurfer/class101-react-fe:0.1
+    container_name: class101-react-fe
+    depends_on:
+      - msa-django-auth
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - msa-net
+
+  msa-django-auth:
+    image: icurfer/class101-django-auth:0.1
+    container_name: class101-django-auth
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    # expose:
+    #   - "8000"                    # 내부 통신용 포트 공개 (외부 노출 X)
+    networks:
+      - msa-net
+
+  msa-django-blog:
+    image: icurfer/class101-django-blog:0.1
+    container_name: class101-django-blog
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8800:8800"
+    # expose:
+    #   - "8800"                    # 내부 통신용 포트 공개 (외부 노출 X)
+    networks:
+      - msa-net
+
+networks:
+  msa-net:
+    driver: bridge
